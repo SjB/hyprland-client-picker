@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "id": "sjb.hyprland-client-picker",
+  "name": "Hyprland client picker",
+  "version": "1.0.0",
+  "author": "sjb",
+  "description": "Search Hyprland clients; Enter focuses, Ctrl+Enter fetches",
+  "kinds": ["menu"],
+  "entryPoints": { "menu": "HyprlandClientPicker.qml" }
+}
