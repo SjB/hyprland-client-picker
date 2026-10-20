@@ -24,6 +24,16 @@ The plugin ID is `sjb.hyprland-client-picker`.
 - Ctrl+Enter fetches the selected client.
 - Escape closes the picker.
 
+## Keybinding (Omarchy)
+
+Add a binding to `~/.config/hypr/bindings.lua` using Omarchy's Lua `o.bind` helper:
+
+```lua
+o.bind("SUPER + SHIFT + W", "Hyprland client picker", "omarchy-shell shell summon sjb.hyprland-client-picker")
+```
+
+Replace the key combo with one you prefer. Omarchy reloads Hyprland config when saved; to apply or validate manually, run `hyprctl reload` and `hyprctl configerrors`.
+
 ## Development
 
 Run the model checks with Node.js:
