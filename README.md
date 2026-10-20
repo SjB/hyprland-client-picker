@@ -20,7 +20,7 @@ The plugin ID is `sjb.hyprland-client-picker`.
 
 ## Use
 
-- Search by window title or application class.
+- Fuzzy-search window titles and application classes; letters can be non-adjacent, spaces split query words, and word-start matches rank higher.
 - Enter focuses the selected client.
 - Ctrl+Enter fetches the selected client.
 - Escape closes the picker.
