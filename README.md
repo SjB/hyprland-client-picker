@@ -6,6 +6,7 @@ Search open Hyprland clients and choose one to focus or fetch.
 
 - Omarchy shell with third-party plugin support
 - Hyprland and `hyprctl` on `PATH`
+- Optional: `grim` on `PATH` for client thumbnails; application icons remain visible without it
 
 ## Install
 

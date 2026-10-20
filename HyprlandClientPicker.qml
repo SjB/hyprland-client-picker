@@ -11,17 +11,37 @@ Item {
   property bool opened: false
   property var clients: []
   property int selectedIndex: 0
+  property int captureIndex: 0
+  property var capturedClients: ({})
   property string error: ""
   readonly property var matches: HyprlandClientPickerModel.filterClients(clients, search.text)
 
   function open() {
     clients = []
+    capturedClients = ({})
     error = ""
     search.text = ""
     selectedIndex = 0
+    captureIndex = 0
     opened = true
     if (!listProc.running) listProc.running = true
     Qt.callLater(function() { search.forceActiveFocus() })
+  }
+
+  function captureNextClient() {
+    if (captureIndex >= clients.length) return
+    var client = clients[captureIndex]
+    if (client.at && client.size && client.size[0] > 0 && client.size[1] > 0) {
+      captureProc.command = ["grim", "-g", client.at.join(",") + " " + client.size.join("x"), capturePath(client)]
+      captureProc.running = true
+    } else {
+      captureIndex++
+      Qt.callLater(root.captureNextClient)
+    }
+  }
+
+  function capturePath(client) {
+    return "/tmp/sjb-hyprland-client-picker-" + client.address + ".png"
   }
 
   function close() { opened = false }
@@ -56,7 +76,23 @@ Item {
       }
     }
     onExited: function(exitCode) {
-      if (exitCode !== 0) root.error = "Could not list Hyprland clients"
+      if (exitCode !== 0) {
+        root.error = "Could not list Hyprland clients"
+        return
+      }
+      root.captureIndex = 0
+      root.captureNextClient()
+    }
+  }
+
+  Process {
+    id: captureProc
+    onExited: function(exitCode) {
+      var updated = Object.assign({}, root.capturedClients)
+      updated[root.clients[root.captureIndex].address] = exitCode === 0
+      root.capturedClients = updated
+      root.captureIndex++
+      Qt.callLater(root.captureNextClient)
     }
   }
 
@@ -144,6 +180,7 @@ Item {
             clip: true
             model: root.matches
             delegate: Rectangle {
+              id: delegateRoot
               required property var modelData
               required property int index
               width: ListView.view.width
@@ -151,11 +188,57 @@ Item {
               radius: Style.cornerRadius
               color: index === root.selectedIndex ? Color.menu.selectedBackground : "transparent"
 
-              Text {
+              readonly property string capturePath: "/tmp/sjb-hyprland-client-picker-" + modelData.address + ".png"
+              readonly property string appIcon: {
+                var cls = modelData.initialClass || modelData.class || ""
+                var de = DesktopEntries.heuristicLookup(cls)
+                if (de && de.icon && Quickshell.hasThemeIcon(de.icon))
+                  return Quickshell.iconPath(de.icon, true)
+                // A broken .desktop StartupWMClass (e.g. Arch chromium ships
+                // "@@startup_wm_class") makes heuristicLookup miss, so resolve
+                // the WM class / executable basename directly as a themed icon.
+                var base = String(cls).split(/[^A-Za-z0-9_.]+/)[0] || ""
+                if (base && Quickshell.hasThemeIcon(base))
+                  return Quickshell.iconPath(base, true)
+                return ""
+              }
+
+              Image {
+                id: thumbnail
                 anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.leftMargin: 12
+                width: 40
+                height: 30
+                fillMode: Image.PreserveAspectFit
+                source: root.capturedClients[modelData.address]
+                  ? "file://" + delegateRoot.capturePath
+                  : parent.appIcon
+                cache: false
+                asynchronous: true
+              }
+
+              Rectangle {
+                anchors.fill: thumbnail
+                visible: thumbnail.status !== Image.Ready
+                radius: 3
+                color: Color.menu.selectedBackground
+                border.color: Color.menu.border
+                border.width: 1
+                Text {
+                  anchors.centerIn: parent
+                  text: "▣"
+                  color: Color.menu.text
+                  font.pixelSize: 20
+                }
+              }
+
+              Text {
+                anchors.left: thumbnail.right
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.margins: 12
+                anchors.leftMargin: 10
+                anchors.rightMargin: 12
                 text: (modelData.title || modelData.class || "Untitled") + "  ·  " + (modelData.class || "")
                 textFormat: Text.PlainText
                 elide: Text.ElideRight
