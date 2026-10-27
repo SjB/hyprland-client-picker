@@ -29,8 +29,12 @@ assert.deepEqual(Array.from(model.filterClients(wordStartClients, 'ch')), [wordS
 assert.deepEqual(Array.from(model.filterClients(wordStartClients, 'ca he')), [wordStartClients[0]])
 assert.deepEqual(Array.from(model.filterClients(wordStartClients, 'c h')), [wordStartClients[0]])
 assert.deepEqual(Array.from(model.filterClients(wordStartClients, 'c ')), wordStartClients)
-assert.equal(Array.from(model.dispatchClient(clients[0], false)).at(-1),
-  "focus_or_launch({ match = '0xab12', field = 'address' })")
-assert.equal(Array.from(model.dispatchClient(clients[0], true)).at(-1),
+assert.equal(Array.from(model.dispatchClient(clients[0], "fetch_or_launch")).slice(0, 2).join(" "),
+  "hyprctl eval")
+assert.equal(Array.from(model.dispatchClient(clients[0], "fetch_or_launch")).at(-1),
   "fetch_or_launch({ match = '0xab12', field = 'address' })")
+assert.equal(Array.from(model.dispatchClient(clients[0], "move_to_monitor")).at(-1),
+  "move_to_monitor({ match = '0xab12', field = 'address' })")
+assert.equal(Array.from(model.dispatchClient(clients[0], "focus_or_launch")).at(-1),
+  "focus_or_launch({ match = '0xab12', field = 'address' })")
 console.log('Hyprland client picker model: OK')

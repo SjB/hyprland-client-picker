@@ -57,9 +57,9 @@ Item {
     results.positionViewAtIndex(selectedIndex, ListView.Contain)
   }
 
-  function activate(fetch) {
+  function activate(action) {
     if (selectedIndex >= matches.length || actionProc.running) return
-    actionProc.command = HyprlandClientPickerModel.dispatchClient(matches[selectedIndex], fetch)
+    actionProc.command = HyprlandClientPickerModel.dispatchClient(matches[selectedIndex], action)
     actionProc.running = true
     opened = false
   }
@@ -155,8 +155,12 @@ Item {
             if (event.key === Qt.Key_Escape) root.dismiss()
             else if (event.key === Qt.Key_Up) root.moveSelection(-1)
             else if (event.key === Qt.Key_Down) root.moveSelection(1)
-            else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter)
-              root.activate((event.modifiers & Qt.ControlModifier) !== 0)
+            else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+              var action = "focus_or_launch"
+              if (event.modifiers & Qt.ControlModifier) action = "move_to_monitor"
+              else if (event.modifiers & Qt.AltModifier) action = "fetch_or_launch"
+              root.activate(action)
+            }
             else return
             event.accepted = true
           }
@@ -249,7 +253,7 @@ Item {
 
               MouseArea {
                 anchors.fill: parent
-                onClicked: { root.selectedIndex = index; root.activate(false) }
+                onClicked: { root.selectedIndex = index; root.activate("fetch_or_launch") }
               }
             }
           }
@@ -264,7 +268,7 @@ Item {
         }
 
         Text {
-          text: "Enter: focus   ·   Ctrl+Enter: fetch"
+          text: "Enter: focus   ·   Ctrl+Enter: move   ·   Alt+Enter: fetch"
           color: Color.menu.text
           opacity: 0.6
           font.family: Style.font.menuFamily

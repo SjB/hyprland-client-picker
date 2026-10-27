@@ -1,6 +1,6 @@
 # Hyprland Client Picker
 
-Search open Hyprland clients and choose one to focus or fetch.
+Search open Hyprland clients and choose one to focus, move, or fetch.
 
 ## Requirements
 
@@ -21,8 +21,9 @@ The plugin ID is `sjb.hyprland-client-picker`.
 ## Use
 
 - Fuzzy-search window titles and application classes; letters can be non-adjacent, spaces split query words, and word-start matches rank higher.
-- Enter focuses the selected client.
-- Ctrl+Enter fetches the selected client.
+- Enter focuses it in place.
+- Ctrl+Enter moves it to the same workspace slot on the active monitor.
+- Alt+Enter fetches the selected client onto the current workspace.
 - Escape closes the picker.
 
 ## Keybinding (Omarchy)
