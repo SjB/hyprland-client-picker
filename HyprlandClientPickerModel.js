@@ -11,6 +11,17 @@ function parseClients(json) {
     }
 }
 
+// hyprctl uses 0x-prefixed addresses; Quickshell's Hyprland toplevels may not.
+function findWaylandHandle(address, toplevels) {
+  var key = String(address).toLowerCase().replace(/^0x/, '')
+  for (var i = 0; i < toplevels.length; i++) {
+    var window = toplevels[i]
+    if (window && String(window.address).toLowerCase().replace(/^0x/, '') === key)
+      return window.wayland || null
+  }
+  return null
+}
+
 function filterClients(clients, query) {
     if (!query.trim()) return clients
     var words = query.toLowerCase().trim().split(/\s+/)

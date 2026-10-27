@@ -6,7 +6,7 @@ Search open Hyprland clients and choose one to focus, move, or fetch.
 
 - Omarchy shell with third-party plugin support
 - Hyprland and `hyprctl` on `PATH`
-- Optional: `grim` on `PATH` for client thumbnails; application icons remain visible without it
+- Quickshell's Hyprland and Wayland screencopy support for live client previews; application icons remain visible when a window cannot be captured
 
 ## Install
 

@@ -11,6 +11,10 @@ const clients = model.parseClients(JSON.stringify([
 ]))
 
 assert.equal(clients.length, 1)
+const handle = { appId: 'editor' }
+assert.equal(model.findWaylandHandle('0xAB12', [{ address: 'ab12', wayland: handle }]), handle)
+assert.equal(model.findWaylandHandle('0xab12', [{ address: 'ab13', wayland: handle }]), null)
+assert.equal(model.findWaylandHandle('0xab12', [{ address: 'ab12' }]), null)
 assert.equal(model.parseClients('{broken'), null)
 assert.equal(model.filterClients(clients, 'EDIT').length, 1)
 assert.equal(model.filterClients(clients, 'secret').length, 0)
