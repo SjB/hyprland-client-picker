@@ -85,6 +85,6 @@ function dispatchClient(client, action) {
     // The address is validated in parseClients, before it enters the Lua dispatcher.
     // hyprctl dispatch wraps the argument in hl.dispatch(), which rejects these
     // functions because they dispatch internally and return nil.
-    return ["hyprctl", "eval", action
+    return ["hyprctl", "eval", "sjb_client_picker." + action
         + "({ match = '" + client.address + "', field = 'address' })"]
 }

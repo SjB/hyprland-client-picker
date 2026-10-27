@@ -36,9 +36,9 @@ assert.deepEqual(Array.from(model.filterClients(wordStartClients, 'c ')), wordSt
 assert.equal(Array.from(model.dispatchClient(clients[0], "fetch_or_launch")).slice(0, 2).join(" "),
   "hyprctl eval")
 assert.equal(Array.from(model.dispatchClient(clients[0], "fetch_or_launch")).at(-1),
-  "fetch_or_launch({ match = '0xab12', field = 'address' })")
+  "sjb_client_picker.fetch_or_launch({ match = '0xab12', field = 'address' })")
 assert.equal(Array.from(model.dispatchClient(clients[0], "move_to_monitor")).at(-1),
-  "move_to_monitor({ match = '0xab12', field = 'address' })")
+  "sjb_client_picker.move_to_monitor({ match = '0xab12', field = 'address' })")
 assert.equal(Array.from(model.dispatchClient(clients[0], "focus_or_launch")).at(-1),
-  "focus_or_launch({ match = '0xab12', field = 'address' })")
+  "sjb_client_picker.focus_or_launch({ match = '0xab12', field = 'address' })")
 console.log('Hyprland client picker model: OK')
